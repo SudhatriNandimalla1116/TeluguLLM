@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+    <meta charset="UTF-8">
+    <title>తెలుగు పదాల ఉత్పత్తి</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            text-align: center;
+            background-color: #f8f8ff;
+            padding: 30px;
+        }
+
+        textarea {
+            width: 60%;
+            height: 100px;
+            padding: 10px;
+            font-size: 18px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+
+        .output {
+            margin-top: 30px;
+            padding: 20px;
+            font-size: 20px;
+            background-color: #e6ffe6;
+            border-radius: 10px;
+            width: 60%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+    <h2>తెలుగు పదాల ఉత్పత్తి యంత్రం</h2>
+    <p>దయచేసి ఒక లేదా అంతకంటే ఎక్కువ తెలుగు అక్షరాలతో ప్రారంభించండి:</p>
+    <textarea id="inputText" placeholder="ఉదా: కా, సా, మా..."></textarea><br>
+    <button onclick="generate()">పదాలు ఉత్పత్తి చేయి</button>
+
+    <div id="output" class="output" style="display:none;"></div>
+
+    <script>
+        async function generate() {
+            const input = document.getElementById('inputText').value;
+            const outputDiv = document.getElementById('output');
+            outputDiv.style.display = 'block';
+            outputDiv.innerHTML = '⏳ ఉత్పత్తి జరుగుతోంది...';
+
+            try {
+                const response = await fetch("http://127.0.0.1:5000/generate", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ text: input })
+                });
+
+                const data = await response.json();
+                if (data.response) {
+                    outputDiv.innerHTML = `✅ <strong>ఫలితం:</strong><br>${data.response}`;
+                } else {
+                    outputDiv.innerHTML = `❌ దోషం: ${data.error}`;
+                }
+            } catch (error) {
+                outputDiv.innerHTML = "❌ సర్వర్‌ను సంప్రదించలేకపోయాము.";
+            }
+        }
+    </script>
+</body>
+</html>
